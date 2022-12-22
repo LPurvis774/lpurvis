@@ -1,0 +1,75 @@
+---
+title: "Leandra Purvis"
+about:
+  template: jolla
+  image: CIYV6572.jpg
+  links:
+    - icon: instagram
+      text: instagram
+      href: https://instagram.com/golddustlea
+    - icon: github
+      text: Github
+      href: https://github.com/LPurvis774
+output:
+  postcards::jolla
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Load libraries 
+library(tidyverse) 
+library(janitor) 
+library(readxl) 
+library(scales)
+library(lubridate)
+library(tidyverse)
+library(tigris)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(htmltools)
+library(janitor)
+library(rmapshaper)
+library(here)
+options(tigris_class = "sf")
+```
+
+Hi, I'm Lea and I am a senior at The George Washington University.
+
+## Education
+
+George Washington University - May 2023
+
+Bachelor Business Administration - Events Management
+
+## Work Experience
+
+##### [CAMPO AT LOS POBLANOS HISTORIC INN AND ORGANIC FARM - Albuquerque, NM]{.underline}
+
+##### [Lead Hostess June 2020 - August 2022]{.underline}
+
+● *Managed and trained hosts on the breakfast, lunch, and dinner teams.*
+
+*● Organized restaurant seating, created reservations, handled room service orders, and seated guests to provide consistent, high-quality service.*
+
+*● Communicated with VIP clientele including A-list celebrities, government officials, and entertainment industry executives in regards to their Campo experience.*
+
+[**CORCORAN THEATRE AND DANCE - GEORGE WASHINGTON UNIVERSITY - Washington, DC**]{.underline}
+
+[**Student Administrative Assistant September 2021 - May 2022**]{.underline}
+
+● *Responsible for creating weekly newsletters as well as updating social media on a regular basis, handling reservations for events, and organizing auditions.*
+
+*● Coordinate across departments with multiple management teams to assist in executing various events including theater performances, dance performances, and several genres of live music.*
+
+*● Assist in ticketing, box office, ushering, and set up and strike to ensure event success.*
+
+[**WRGW RADIO - Washington, DC**]{.underline}
+
+[**Radio Show Host and Station Writer September 2019 - Present**]{.underline}
+
+● *Responsible for creating and broadcasting live shows weekly.*
+
+*● Coordinates with local and touring artists for in-studio sessions and interviews.*
+
+*● Coordinates with the radio station as well as local venues in order to create concert previews and reviews.*
