@@ -2,7 +2,7 @@
 title: "Leandra Purvis"
 about:
   template: jolla
-  image: CIYV6572.jpg
+  image: CIYV6572.JPG
   links:
     - icon: instagram
       text: instagram
@@ -10,8 +10,6 @@ about:
     - icon: github
       text: Github
       href: https://github.com/LPurvis774
-output:
-  postcards::jolla
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
