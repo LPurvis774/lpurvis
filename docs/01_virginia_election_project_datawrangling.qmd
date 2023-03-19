@@ -98,26 +98,13 @@ Data available from the state here: <https://results.elections.virginia.gov/vael
 In JSON format only
 
 ```{r}
-#build the url
-url <- "https://results.elections.virginia.gov/vaelections/2021%20November%20General/Json/Governor.json"
-
-get_info <- GET(url)
-
-this.raw.content <- rawToChar(get_info$content)
-this.content <- fromJSON(this.raw.content)
-
-#dataframe from just the 6 content 
-content_df <- as.data.frame(this.content[[6]])
+results <- read_csv("2021 November General .csv")
 
 ```
 
 Where are candidates themselves? They are "nested" inside. We'll use `unnest()`to expand things.
 
 ```{r}
-#unnest
-results <- content_df %>%
-  unnest(cols = Candidates)
-
 head(results)
 
 ```
@@ -127,7 +114,7 @@ Unnest again on locality
 ```{r}
 
 results <- results %>%
-  unnest(cols = Locality)
+  unnest(cols = LocalityName)
 
 head(results)
 ```
