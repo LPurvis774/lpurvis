@@ -1,0 +1,295 @@
+---
+title: "Georgia Election Results Walkthrough"
+author: "Leandra Purvis"
+date: November 11 2022
+format:
+  html:
+    self-contained: true
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Load libraries 
+library(tidyverse) 
+library(janitor) 
+library(readxl) 
+library(scales)
+library(lubridate)
+library(tidyverse)
+library(tigris)
+library(sf)
+library(tmap)
+library(tmaptools)
+library(htmltools)
+library(janitor)
+library(rmapshaper)
+library(here)
+options(tigris_class = "sf")
+
+```
+
+
+# Introduction
+
+The data used for this assignment includes Georgia election results by county for U.S.
+Senate and Governor in 2022, President in 2020, and then some of the same socioeconomic factors we've looked at other contexts so far during the semester.
+
+
+```{r}
+#import the GA election data for this assignment
+
+#GA senate
+senate_results <- read_excel(here("docs/ga_votes.xlsx"), sheet = "senate")
+
+#GA governor
+governor_results <- read_excel(here("docs/ga_votes.xlsx"), sheet = "governor")
+
+
+```
+
+
+# Charts
+
+**1)**
+
+The following chart demonstrates how many countries the Republican candidate did better vs. worse than Trump in the Senate race.
+I did this by first creating a count of the counties where the Republican cadidate did better than Trump using the "count" function of the column 'is_r\_above_trump'.
+I then used ggplot to graph this data.
+I used the function "aes" to tell r which variables represented what (x represented 'yes' or 'no' that the candidate did better than Trump, and y represented the amount of countiess).
+Further instructions were about design of the graph - "geom_col" allowed me to design the colors of the graph, "coord_flip" allowed me to change the orientation of the graph, and then I was able to name x and y using "name =".
+
+
+```{r}
+county_count <- senate_results %>% 
+  count(is_r_above_trump)
+
+ggplot(county_count, aes(x = is_r_above_trump , y = n ))+
+  geom_col(color="black", fill="maroon")+
+  coord_flip()+
+  scale_y_continuous(name = "# of Counties")+
+  scale_x_discrete(name = "Better Than Trump")
+
+
+
+
+```
+
+
+**2)**
+
+I then repeated the same process using the same functions for the race for the governor.
+
+
+```{r}
+gov_count <- governor_results %>% 
+  count(is_r_above_trump)
+ggplot(gov_count, aes(x = is_r_above_trump , y = n ))+
+  geom_col(color="black", fill="navy")+
+  coord_flip()+
+  scale_y_continuous(name = "# of Counties")+
+  scale_x_discrete(name = "Better Than Trump")
+
+
+
+
+```
+
+
+**3)**
+
+Next I wanted to create a chart that demonstrated the top ten biggest drops between the Republican candidate and Trump.
+In other words I wanted to show candidates with the highest percent drop from Trump.
+
+To do this I began by using the "filter" function to sort out the candidates that had greater than a 1% drop from Trump *(filter(pct_r\_above_trump\<1))*.
+I then used the "arrange" filter to sort it from greatest drop to smaller drops in percentage, and finally used the *(head(10))* function to show only the top 10.
+I then repeated my earlier steps using the ggplot package to create my graph which represented these drops.
+This time, however, I pulled from my newley created data "biggest_drops" formed from the work I just did.
+My x *((x = reorder(county,desc(pct_r\_above_trump)))* - using the "desc" function rearranged the counties in descending order from greatest drop to lowest.
+variable was now the county and the y *(y = pct_r\_above_trump)* variable was the % lower than Trump.
+
+
+```{r}
+biggest_drops <- senate_results %>% 
+  filter(pct_r_above_trump<1) %>% 
+  arrange(pct_r_above_trump) %>% 
+  head(10)
+biggest_drops
+ggplot(biggest_drops, aes(x = reorder(county,desc(pct_r_above_trump)) , y = pct_r_above_trump ))+
+  geom_col(color="black", fill="navy")+
+  coord_flip()+
+  scale_y_continuous(name = "% Lower than Trump")+
+  scale_x_discrete(name = "County")
+
+
+
+```
+
+
+**4)**
+
+Next, for the Senate race, I created a chart that shows the top 10 counties with the highest margins of victory for the Democratic candidate.
+I began I using the senate_results and using the "group_by" function to show only the counties *(group_by(county))*.
+I then used the "summarise" function to calculate my margin by dividing the percent of Democrats who won over the percent of Republicans who won *(summarise(dem_margin_s = pct_d\_2022/pct_r\_2022))*.
+I then used the same "arrange" and "head" functions as before to sort my newly calculated values in descending order and to only show the top 10.
+I then created my graph in the same manner as done above.
+
+
+```{r}
+dem_win_s <- senate_results %>% 
+  group_by(county) %>% 
+  summarise(dem_margin_s = pct_d_2022/pct_r_2022) %>% 
+  arrange(desc(dem_margin_s)) %>% 
+  head(10)
+dem_win_s
+ggplot(dem_win_s, aes(x = reorder(county,dem_margin_s) , y = dem_margin_s ))+
+  geom_col(color="black", fill="dark green")+
+  coord_flip()+
+  scale_y_continuous(name = "Democrat Victory Margin")+
+  scale_x_discrete(name = "County")
+
+
+
+```
+
+
+**5)**
+
+The same process was then repeated from the governor's race.
+
+
+```{r}
+dem_win_g <- governor_results %>% 
+  group_by(county) %>% 
+  summarise(dem_margin_g = pct_d_2022/pct_r_2022) %>% 
+  arrange(desc(dem_margin_g)) %>% 
+  head(10)
+dem_win_g
+ggplot(dem_win_g, aes(x = reorder(county,dem_margin_g) , y = dem_margin_g ))+
+  geom_col(color="black", fill="dark green")+
+  coord_flip()+
+  scale_y_continuous(name = "Democrat Victory Margin")+
+  scale_x_discrete(name = "County")
+
+
+
+
+
+```
+
+
+# Maps
+
+*For this section use the `tmap` package to create your charts.*
+
+To help start things out for you, we're going to download a geospatial/map dataset with the county boundaries for Georgia.
+We'll use the `tigris` package to do this.
+
+
+```{r}
+counties_geo <- tigris::counties(state = "GA", resolution = "20m", cb = TRUE)
+```
+
+
+Using the tmap package we are able to use the following functions to map out the stage of Georgia
+
+
+```{r}
+
+tm_shape(counties_geo) + 
+  tm_polygons()
+
+
+```
+
+
+Great, it looks like we should be good to go.
+Use the newly created map data in `counties_geo` along with our election results datasets to complete the questions below.
+
+**7)**
+
+For the Senate race, create a choropleth (shaded) map of Georgia counties that shows where the Republican candidate for Senate did better vs. worse than Trump.
+
+To create my choropleth map I began by first using the "inner_join" function to join the data between "counties_geo" and "senate_results".
+This is necessary because the same data is labeled under different names in each set.
+So, now, R knows that "GEOID" and "fipsCode" are the same things and can be correlated when making the map.
+"glimpse" then allows us to view the newly joined map.
+
+Next, "tmap_mode" with the mode="plot" , it will add a structure to our map for the shading.
+Then finally, we will use *(tm_shape(districtmap_s) + tm_polygons("pct_r\_above_trump", id = "county")* which will map the counties where the senate candidate did better than Trump and the shading shows by how much.
+
+
+```{r}
+
+districtmap_s <- inner_join(counties_geo, senate_results, by = c("GEOID" = "fipsCode"))
+glimpse(districtmap_s)
+
+tmap_mode(mode = "plot")
+
+tm_shape(districtmap_s) +
+  tm_polygons("pct_r_above_trump", id = "county")
+
+```
+
+
+**8)**
+
+The same process was then repeated for the governor's race.
+
+
+```{r}
+districtmap_g <- inner_join(counties_geo, governor_results, by = c("GEOID" = "fipsCode"))
+glimpse(districtmap_g)
+
+tmap_mode(mode = "plot")
+
+tm_shape(districtmap_g) +
+  tm_polygons("pct_r_above_trump", id = "county")
+
+
+
+
+```
+
+
+**9)**
+
+For the Senate race, create a choropleth map that shows the margins of victory for the Democratic candidate.
+To do that you'll need to compare the Democratic candidate's percentage (pct_d\_2022) with the Republican's (pct_r\_2022) to calculate the margin of victory for each county.
+
+To calculate the margin of victory I used the "mutate" function to give us a new column for our calculated results and then subtracted the Democrats' percentage by the Republicans'.
+I then repeated the same steps as above to create the map.
+
+
+```{r}
+
+districtmap_margin_s <- districtmap_s %>% 
+  mutate(dem_margin_s = pct_d_2022-pct_r_2022)
+  
+tm_shape(districtmap_margin_s) +
+  tm_polygons("dem_margin_s", id = "county")
+
+
+```
+
+
+**10)**
+
+The same process was followed as the previous step except this time for the governor's race.
+
+
+```{r}
+districtmap_margin_g <- districtmap_g %>% 
+  mutate(dem_margin_g = pct_d_2022-pct_r_2022)
+  
+tm_shape(districtmap_margin_g) +
+  tm_polygons("dem_margin_g", id = "county")
+
+
+
+
+```
+

@@ -11,6 +11,7 @@ website:
       - href: https://drive.google.com/file/d/1wXQc20oYHY1mhGNRCFdPFt4UnzTNGnuS/view?usp=sharing
         text: Resume
       - Portfolio.qmd
+      - Walkthrough.qmd
 
 format:
   html:
