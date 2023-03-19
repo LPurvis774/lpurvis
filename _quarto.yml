@@ -3,12 +3,13 @@ project:
   output-dir: docs
 
 website:
-  title: "lpurvis"
+  title: "Leandra Purvis"
   navbar:
     left:
-      - href: index.qmd
+      - href: Index Page.qmd
         text: Home
-      - about.qmd
+      - href: https://drive.google.com/file/d/1wXQc20oYHY1mhGNRCFdPFt4UnzTNGnuS/view?usp=sharing
+        text: Resume
       - Portfolio.qmd
 
 format:

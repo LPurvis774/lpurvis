@@ -29,10 +29,11 @@ library(htmltools)
 library(janitor)
 library(rmapshaper)
 library(here)
+library(knitr)
 options(tigris_class = "sf")
 ```
 
-Hi, I'm Lea and I am a senior at The George Washington University.
+Hi, I'm Lea and I am a senior at The George Washington University. I am studying Business Administration with a concentration in Events Management. Below, you can find my education history as well as employment history!
 
 ## Education
 
@@ -46,7 +47,7 @@ Bachelor Business Administration - Events Management
 
 ##### [Lead Hostess June 2020 - August 2022]{.underline}
 
-● *Managed and trained hosts on the breakfast, lunch, and dinner teams.*
+*● Managed and trained hosts on the breakfast, lunch, and dinner teams.*
 
 *● Organized restaurant seating, created reservations, handled room service orders, and seated guests to provide consistent, high-quality service.*
 
@@ -56,7 +57,7 @@ Bachelor Business Administration - Events Management
 
 [**Student Administrative Assistant September 2021 - May 2022**]{.underline}
 
-● *Responsible for creating weekly newsletters as well as updating social media on a regular basis, handling reservations for events, and organizing auditions.*
+*● Responsible for creating weekly newsletters as well as updating social media on a regular basis, handling reservations for events, and organizing auditions.*
 
 *● Coordinate across departments with multiple management teams to assist in executing various events including theater performances, dance performances, and several genres of live music.*
 
@@ -66,7 +67,7 @@ Bachelor Business Administration - Events Management
 
 [**Radio Show Host and Station Writer September 2019 - Present**]{.underline}
 
-● *Responsible for creating and broadcasting live shows weekly.*
+*● Responsible for creating and broadcasting live shows weekly.*
 
 *● Coordinates with local and touring artists for in-studio sessions and interviews.*
 
